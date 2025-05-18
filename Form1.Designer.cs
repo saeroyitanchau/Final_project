@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -10,7 +10,13 @@ namespace _99sln
 {
     partial class Form1
     {
-
+        
+        private void button3_Click(object sender, EventArgs e)
+        {
+            comboBox1.SelectedIndex = -1;
+            comboBox2.SelectedIndex = -1;
+            label3.Text = "Độ dài đường đi ngắn nhất sẽ được hiển thị tại đây";
+        }
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -21,9 +27,10 @@ namespace _99sln
         /// Clean up any resources being used.
         private Tuple<List<string>, Dictionary<string, int>> Dijkstra(string start, string end)
         {
-            var distances = new Dictionary<string, int>();
-            var previousNodes = new Dictionary<string, string>();
-            var unvisited = new HashSet<string>(graph.Keys);
+            Dictionary<string, int> distances = new Dictionary<string, int>();
+            Dictionary<string, string> previousNodes = new Dictionary<string, string>();
+            HashSet<string> unvisited = new HashSet<string>(graph.Keys);
+
 
             foreach (var node in graph.Keys)
             {
@@ -34,14 +41,14 @@ namespace _99sln
 
             while (unvisited.Count > 0)
             {
-                var current = unvisited.OrderBy(n => distances[n]).FirstOrDefault();
+                string current = unvisited.OrderBy(n => distances[n]).FirstOrDefault();
                 if (current == null || distances[current] == int.MaxValue) break;
 
                 unvisited.Remove(current);
 
                 foreach (var neighbor in graph[current])
                 {
-                    var tentativeDistance = distances[current] + neighbor.Value;
+                    int tentativeDistance = distances[current] + neighbor.Value;
                     if (tentativeDistance < distances[neighbor.Key])
                     {
                         distances[neighbor.Key] = tentativeDistance;
@@ -50,8 +57,8 @@ namespace _99sln
                 }
             }
 
-            var path = new List<string>();
-            var currentNode = end;
+            List<string> path = new List<string>();
+            string currentNode = end;
             while (currentNode != null)
             {
                 path.Insert(0, currentNode);
@@ -90,9 +97,9 @@ namespace _99sln
             string start = comboBox1.SelectedItem.ToString();
             string end = comboBox2.SelectedItem.ToString();
 
-            var result = Dijkstra(start, end);
-            var path = result.Item1;
-            var distances = result.Item2;
+            Tuple<List<string>, Dictionary<string, int>> result = Dijkstra(start, end);
+            List<string> path = result.Item1;
+            Dictionary<string, int> distances = result.Item2;
 
             if (path.Count == 0)
             {
@@ -280,6 +287,8 @@ namespace _99sln
             this.button3.TabIndex = 6;
             this.button3.Text = "Xóa";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+
             // 
             // label3
             // 
